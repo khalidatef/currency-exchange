@@ -7,6 +7,7 @@ const btn = document.querySelector("#convertBtn");
 const result = document.querySelector("#result");
 const fromFlag = document.querySelector("#fromFlag");
 const toFlag = document.querySelector("#toFlag");
+const errorMessage = document.querySelector(".error");
 
 let countries = Object.entries(COUNTRY_NAMES)
   .map(([code, country]) => {
@@ -20,9 +21,9 @@ toCurrency.innerHTML = countries;
 fromCurrency.value = "AED";
 toCurrency.value = "AED";
 result.innerHTML = `1 AED = 1.00 AED`;
+
 function changeFlag(currency, flag) {
   let countryCode = currency.value.slice(0, 2);
-
   flag.src = `https://flagsapi.com/${countryCode}/shiny/32.png`;
 }
 
@@ -45,10 +46,16 @@ btn.addEventListener("click", () => {
       return res.json();
     })
     .then((data) => {
+      console.log(data);
+
       let rate = data.conversion_rates[toCurrency.value];
 
       let finalResult = (amount.value * rate).toFixed(2);
 
       result.innerHTML = `${amount.value} ${fromCurrency.value} = ${finalResult} ${toCurrency.value}`;
+    })
+    .catch((err) => {
+      console.log(err);
+      errorMessage.innerHTML = `<h1 class="text-danger mt-4 text-center">Can't load Api! Try agin</h1>`;
     });
 });
